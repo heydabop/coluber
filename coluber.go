@@ -32,36 +32,56 @@ func moveSnake(snake []Segment, board [][]Cell) {
 		for i := range snake {
 			switch snake[i].Dir {
 			case 0:
-				board[snake[i].Y][snake[i].X].Color = ColorEmpty
-				board[snake[i].Y][snake[i].X].Clear = true
-				termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
+				if snake[i].N == len(snake) - 1 {
+					board[snake[i].Y][snake[i].X].Color = ColorEmpty
+					board[snake[i].Y][snake[i].X].Clear = true
+					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
+				}
 				snake[i].Y = snake[i].Y - 1
-				board[snake[i].Y][snake[i].X].Color = ColorSnake
-				board[snake[i].Y][snake[i].X].Clear = false
-				termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
+				if snake[i].N == 0 {
+					board[snake[i].Y][snake[i].X].Color = ColorSnake
+					board[snake[i].Y][snake[i].X].Clear = false
+					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
+				}
 				break
 			case 1:
-				board[snake[i].Y][snake[i].X].Color = ColorEmpty
-				board[snake[i].Y][snake[i].X].Clear = true
-				termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
+				if snake[i].N == len(snake) - 1 {
+					board[snake[i].Y][snake[i].X].Color = ColorEmpty
+					board[snake[i].Y][snake[i].X].Clear = true
+					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
+				}
 				snake[i].X = snake[i].X + 1
-				board[snake[i].Y][snake[i].X].Color = ColorSnake
-				board[snake[i].Y][snake[i].X].Clear = false
-				termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
+				if snake[i].N == 0 {
+					board[snake[i].Y][snake[i].X].Color = ColorSnake
+					board[snake[i].Y][snake[i].X].Clear = false
+					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
+				}
 				break
 			case 2:
-				board[snake[i].Y][snake[i].X].Color = ColorEmpty
-				board[snake[i].Y][snake[i].X].Clear = true
+				if snake[i].N == len(snake) - 1 {
+					board[snake[i].Y][snake[i].X].Color = ColorEmpty
+					board[snake[i].Y][snake[i].X].Clear = true
+					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
+				}
 				snake[i].Y = snake[i].Y + 1
-				board[snake[i].Y][snake[i].X].Color = ColorSnake
-				board[snake[i].Y][snake[i].X].Clear = false
+				if snake[i].N == 0 {
+					board[snake[i].Y][snake[i].X].Color = ColorSnake
+					board[snake[i].Y][snake[i].X].Clear = false
+					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
+				}
 				break
 			case 3:
-				board[snake[i].Y][snake[i].X].Color = ColorEmpty
-				board[snake[i].Y][snake[i].X].Clear = true
+				if snake[i].N == len(snake) - 1 {
+					board[snake[i].Y][snake[i].X].Color = ColorEmpty
+					board[snake[i].Y][snake[i].X].Clear = true
+					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
+				}
 				snake[i].X = snake[i].X - 1
-				board[snake[i].Y][snake[i].X].Color = ColorSnake
-				board[snake[i].Y][snake[i].X].Clear = false
+				if snake[i].N == 0 {
+					board[snake[i].Y][snake[i].X].Color = ColorSnake
+					board[snake[i].Y][snake[i].X].Clear = false
+					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
+				}
 				break
 			}
 		}
