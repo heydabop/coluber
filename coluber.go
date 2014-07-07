@@ -23,7 +23,6 @@ type Cell struct {
 type Segment struct {
 	X int
 	Y int
-	N int
 	Dir int
 }
 
@@ -32,55 +31,63 @@ func moveSnake(snake []Segment, board [][]Cell) {
 		for i := range snake {
 			switch snake[i].Dir {
 			case 0:
-				if snake[i].N == len(snake) - 1 {
+				if i == len(snake) - 1 {
 					board[snake[i].Y][snake[i].X].Color = ColorEmpty
 					board[snake[i].Y][snake[i].X].Clear = true
 					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
 				}
 				snake[i].Y = snake[i].Y - 1
-				if snake[i].N == 0 {
+				if i == 0 {
 					board[snake[i].Y][snake[i].X].Color = ColorSnake
 					board[snake[i].Y][snake[i].X].Clear = false
 					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
+				} else {
+					snake[i].Dir = snake[i-1].Dir
 				}
 				break
 			case 1:
-				if snake[i].N == len(snake) - 1 {
+				if i == len(snake) - 1 {
 					board[snake[i].Y][snake[i].X].Color = ColorEmpty
 					board[snake[i].Y][snake[i].X].Clear = true
 					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
 				}
 				snake[i].X = snake[i].X + 1
-				if snake[i].N == 0 {
+				if i == 0 {
 					board[snake[i].Y][snake[i].X].Color = ColorSnake
 					board[snake[i].Y][snake[i].X].Clear = false
 					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
+				}else {
+					snake[i].Dir = snake[i-1].Dir
 				}
 				break
 			case 2:
-				if snake[i].N == len(snake) - 1 {
+				if i == len(snake) - 1 {
 					board[snake[i].Y][snake[i].X].Color = ColorEmpty
 					board[snake[i].Y][snake[i].X].Clear = true
 					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
 				}
 				snake[i].Y = snake[i].Y + 1
-				if snake[i].N == 0 {
+				if i == 0 {
 					board[snake[i].Y][snake[i].X].Color = ColorSnake
 					board[snake[i].Y][snake[i].X].Clear = false
 					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
+				}else {
+					snake[i].Dir = snake[i-1].Dir
 				}
 				break
 			case 3:
-				if snake[i].N == len(snake) - 1 {
+				if i == len(snake) - 1 {
 					board[snake[i].Y][snake[i].X].Color = ColorEmpty
 					board[snake[i].Y][snake[i].X].Clear = true
 					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
 				}
 				snake[i].X = snake[i].X - 1
-				if snake[i].N == 0 {
+				if i == 0 {
 					board[snake[i].Y][snake[i].X].Color = ColorSnake
 					board[snake[i].Y][snake[i].X].Clear = false
 					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
+				} else {
+					snake[i].Dir = snake[i-1].Dir
 				}
 				break
 			}
@@ -112,7 +119,7 @@ func main() {
 	}
 	snake := make([]Segment, 4, 16)
 	for i := range snake {
-		snake[i] = Segment{40-i, 20, i, 1}
+		snake[i] = Segment{40-i, 20, 1}
 		board[20][40-i].Color = ColorSnake
 		board[20][40-i].Clear = false
 	}
@@ -123,5 +130,28 @@ func main() {
 	}
 	termbox.Flush()
 	go moveSnake(snake, board)
-	time.Sleep(3*time.Second)
+	for {
+		switch ev := termbox.PollEvent(); ev.Type {
+		case termbox.EventKey:
+			switch ev.Key {
+			case termbox.KeyArrowUp:
+				snake[0].Dir = 0
+				break
+			case termbox.KeyArrowRight:
+				snake[0].Dir = 1
+				break
+			case termbox.KeyArrowDown:
+				snake[0].Dir = 2
+				break
+			case termbox.KeyArrowLeft:
+				snake[0].Dir = 3
+				break
+			case termbox.KeyCtrlC:
+				return
+			}
+		case termbox.EventError:
+			log.Panic(ev.Err)
+			break
+		}
+	}
 }
