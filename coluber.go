@@ -1,0 +1,107 @@
+package main
+
+import (
+	"github.com/nsf/termbox-go"
+	"log"
+	"time"
+)
+
+const (
+	ColorWall = termbox.ColorRed
+	ColorEmpty = termbox.ColorBlack
+	ColorSnake = termbox.ColorGreen
+	ColorFood = termbox.ColorYellow
+)
+
+type Cell struct {
+	X int
+	Y int
+	Clear bool
+	Color termbox.Attribute
+}
+
+type Segment struct {
+	X int
+	Y int
+	N int
+	Dir int
+}
+
+func moveSnake(snake []Segment, board [][]Cell) {
+	for {
+		for i := range snake {
+			switch snake[i].Dir {
+			case 0:
+				board[snake[i].Y][snake[i].X].Color = ColorEmpty
+				board[snake[i].Y][snake[i].X].Clear = true
+				termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
+				snake[i].Y = snake[i].Y - 1
+				board[snake[i].Y][snake[i].X].Color = ColorSnake
+				board[snake[i].Y][snake[i].X].Clear = false
+				termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
+				break
+			case 1:
+				board[snake[i].Y][snake[i].X].Color = ColorEmpty
+				board[snake[i].Y][snake[i].X].Clear = true
+				termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
+				snake[i].X = snake[i].X + 1
+				board[snake[i].Y][snake[i].X].Color = ColorSnake
+				board[snake[i].Y][snake[i].X].Clear = false
+				termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
+				break
+			case 2:
+				board[snake[i].Y][snake[i].X].Color = ColorEmpty
+				board[snake[i].Y][snake[i].X].Clear = true
+				snake[i].Y = snake[i].Y + 1
+				board[snake[i].Y][snake[i].X].Color = ColorSnake
+				board[snake[i].Y][snake[i].X].Clear = false
+				break
+			case 3:
+				board[snake[i].Y][snake[i].X].Color = ColorEmpty
+				board[snake[i].Y][snake[i].X].Clear = true
+				snake[i].X = snake[i].X - 1
+				board[snake[i].Y][snake[i].X].Color = ColorSnake
+				board[snake[i].Y][snake[i].X].Clear = false
+				break
+			}
+		}
+		termbox.Flush()
+		time.Sleep(500 * time.Millisecond)
+	}
+}
+
+func main() {
+	err := termbox.Init()
+	if err != nil {
+		log.Panicln(err)
+	}
+	defer termbox.Close()
+	termbox.SetInputMode(termbox.InputEsc)
+
+	const boardSize = 40
+	board := make([][]Cell, boardSize)
+	for y := range board {
+		board[y] = make([]Cell, boardSize*2)
+		for x := range board[y] {
+			if x == 0 || y == 0 || x == (boardSize*2)-1 || y == boardSize-1 {
+				board[y][x] = Cell{x, y, false, ColorWall}
+			} else {
+				board[y][x] = Cell{x, y, true, ColorEmpty}
+			}
+		}
+	}
+	snake := make([]Segment, 4, 16)
+	for i := range snake {
+		snake[i] = Segment{40-i, 20, i, 1}
+		board[20][40-i].Color = ColorSnake
+		board[20][40-i].Clear = false
+	}
+	for _, row := range board {
+		for _, cell := range row {
+			termbox.SetCell(cell.X, cell.Y, 0x0000, termbox.ColorBlack, cell.Color)
+		}
+	}
+	termbox.Flush()
+	go moveSnake(snake, board)
+	time.Sleep(3*time.Second)
+}
