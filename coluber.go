@@ -41,8 +41,6 @@ func moveSnake(snake []Segment, board [][]Cell) {
 					board[snake[i].Y][snake[i].X].Color = ColorSnake
 					board[snake[i].Y][snake[i].X].Clear = false
 					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
-				} else {
-					snake[i].Dir = snake[i-1].Dir
 				}
 				break
 			case 1:
@@ -56,8 +54,6 @@ func moveSnake(snake []Segment, board [][]Cell) {
 					board[snake[i].Y][snake[i].X].Color = ColorSnake
 					board[snake[i].Y][snake[i].X].Clear = false
 					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
-				}else {
-					snake[i].Dir = snake[i-1].Dir
 				}
 				break
 			case 2:
@@ -71,8 +67,6 @@ func moveSnake(snake []Segment, board [][]Cell) {
 					board[snake[i].Y][snake[i].X].Color = ColorSnake
 					board[snake[i].Y][snake[i].X].Clear = false
 					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
-				}else {
-					snake[i].Dir = snake[i-1].Dir
 				}
 				break
 			case 3:
@@ -86,11 +80,12 @@ func moveSnake(snake []Segment, board [][]Cell) {
 					board[snake[i].Y][snake[i].X].Color = ColorSnake
 					board[snake[i].Y][snake[i].X].Clear = false
 					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
-				} else {
-					snake[i].Dir = snake[i-1].Dir
 				}
 				break
 			}
+		}
+		for j := len(snake) - 1; j > 0; j-- {
+			snake[j].Dir = snake[j-1].Dir
 		}
 		termbox.Flush()
 		time.Sleep(500 * time.Millisecond)
