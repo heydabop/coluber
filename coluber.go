@@ -7,22 +7,22 @@ import (
 )
 
 const (
-	ColorWall = termbox.ColorRed
+	ColorWall  = termbox.ColorRed
 	ColorEmpty = termbox.ColorBlack
 	ColorSnake = termbox.ColorGreen
-	ColorFood = termbox.ColorYellow
+	ColorFood  = termbox.ColorYellow
 )
 
 type Cell struct {
-	X int
-	Y int
+	X     int
+	Y     int
 	Clear bool
 	Color termbox.Attribute
 }
 
 type Segment struct {
-	X int
-	Y int
+	X   int
+	Y   int
 	Dir int
 }
 
@@ -31,7 +31,7 @@ func moveSnake(snake []Segment, board [][]Cell) {
 		for i := range snake {
 			switch snake[i].Dir {
 			case 0:
-				if i == len(snake) - 1 {
+				if i == len(snake)-1 {
 					board[snake[i].Y][snake[i].X].Color = ColorEmpty
 					board[snake[i].Y][snake[i].X].Clear = true
 					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
@@ -44,7 +44,7 @@ func moveSnake(snake []Segment, board [][]Cell) {
 				}
 				break
 			case 1:
-				if i == len(snake) - 1 {
+				if i == len(snake)-1 {
 					board[snake[i].Y][snake[i].X].Color = ColorEmpty
 					board[snake[i].Y][snake[i].X].Clear = true
 					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
@@ -57,7 +57,7 @@ func moveSnake(snake []Segment, board [][]Cell) {
 				}
 				break
 			case 2:
-				if i == len(snake) - 1 {
+				if i == len(snake)-1 {
 					board[snake[i].Y][snake[i].X].Color = ColorEmpty
 					board[snake[i].Y][snake[i].X].Clear = true
 					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
@@ -70,7 +70,7 @@ func moveSnake(snake []Segment, board [][]Cell) {
 				}
 				break
 			case 3:
-				if i == len(snake) - 1 {
+				if i == len(snake)-1 {
 					board[snake[i].Y][snake[i].X].Color = ColorEmpty
 					board[snake[i].Y][snake[i].X].Clear = true
 					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
@@ -114,7 +114,7 @@ func main() {
 	}
 	snake := make([]Segment, 4, 16)
 	for i := range snake {
-		snake[i] = Segment{40-i, 20, 1}
+		snake[i] = Segment{40 - i, 20, 1}
 		board[20][40-i].Color = ColorSnake
 		board[20][40-i].Clear = false
 	}
