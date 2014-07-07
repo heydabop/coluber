@@ -130,16 +130,24 @@ func main() {
 		case termbox.EventKey:
 			switch ev.Key {
 			case termbox.KeyArrowUp:
-				snake[0].Dir = 0
+				if snake[0].Dir != 2 {
+					snake[0].Dir = 0
+				}
 				break
 			case termbox.KeyArrowRight:
-				snake[0].Dir = 1
+				if snake[0].Dir != 3 {
+					snake[0].Dir = 1
+				}
 				break
 			case termbox.KeyArrowDown:
-				snake[0].Dir = 2
+				if snake[0].Dir != 0 {
+					snake[0].Dir = 2
+				}
 				break
 			case termbox.KeyArrowLeft:
-				snake[0].Dir = 3
+				if snake[0].Dir != 1 {
+					snake[0].Dir = 3
+				}
 				break
 			case termbox.KeyCtrlC:
 				return
