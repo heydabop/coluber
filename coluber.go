@@ -26,7 +26,7 @@ type Segment struct {
 	Dir int
 }
 
-func moveSnake(snake []Segment, board [][]Cell) {
+func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
 	for {
 		for i := range snake {
 			switch snake[i].Dir {
@@ -87,8 +87,9 @@ func moveSnake(snake []Segment, board [][]Cell) {
 		for j := len(snake) - 1; j > 0; j-- {
 			snake[j].Dir = snake[j-1].Dir
 		}
+		*lastDir = snake[0].Dir
 		termbox.Flush()
-		time.Sleep(500 * time.Millisecond)
+		time.Sleep(200 * time.Millisecond)
 	}
 }
 
@@ -124,28 +125,29 @@ func main() {
 		}
 	}
 	termbox.Flush()
-	go moveSnake(snake, board)
+	lastDir := snake[0].Dir
+	go moveSnake(snake, board, &lastDir)
 	for {
 		switch ev := termbox.PollEvent(); ev.Type {
 		case termbox.EventKey:
 			switch ev.Key {
 			case termbox.KeyArrowUp:
-				if snake[0].Dir != 2 {
+				if lastDir != 2 {
 					snake[0].Dir = 0
 				}
 				break
 			case termbox.KeyArrowRight:
-				if snake[0].Dir != 3 {
+				if lastDir != 3 {
 					snake[0].Dir = 1
 				}
 				break
 			case termbox.KeyArrowDown:
-				if snake[0].Dir != 0 {
+				if lastDir != 0 {
 					snake[0].Dir = 2
 				}
 				break
 			case termbox.KeyArrowLeft:
-				if snake[0].Dir != 1 {
+				if lastDir != 1 {
 					snake[0].Dir = 3
 				}
 				break
