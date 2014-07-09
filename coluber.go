@@ -26,6 +26,14 @@ type Segment struct {
 	Dir int
 }
 
+func gameOver(snake []Segment, board [][]Cell) {
+	for i := range snake {
+		termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, termbox.ColorRed)
+	}
+	termbox.Flush()
+	return
+}
+
 func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
 	for {
 		for i := range snake {
@@ -49,6 +57,24 @@ func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
 				break
 			}
 			if i == 0 {
+				if !board[snake[i].Y][snake[i].X].Clear { //collision
+					switch snake[i].Dir { //undo move of head segment
+					case 0:
+						snake[i].Y = snake[i].Y + 1
+						break
+					case 1:
+						snake[i].X = snake[i].X - 1
+						break
+					case 2:
+						snake[i].Y = snake[i].Y - 1
+						break
+					case 3:
+						snake[i].X = snake[i].X + 1
+						break
+					}
+					gameOver(snake, board)
+					return
+				}
 				board[snake[i].Y][snake[i].X].Color = ColorSnake
 				board[snake[i].Y][snake[i].X].Clear = false
 				termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
@@ -83,7 +109,7 @@ func main() {
 			}
 		}
 	}
-	snake := make([]Segment, 4, 16)
+	snake := make([]Segment, 7, 16)
 	for i := range snake {
 		snake[i] = Segment{40 - i, 20, 1}
 		board[20][40-i].Color = ColorSnake
