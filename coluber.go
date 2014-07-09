@@ -136,12 +136,20 @@ func main() {
 	defer termbox.Close()
 	termbox.SetInputMode(termbox.InputEsc)
 
-	const boardSize = 40
-	board := make([][]Cell, boardSize)
+	boardSizeY := 40
+	boardSizeX := boardSizeY * 2
+	termSizeX, termSizeY := termbox.Size()
+	if termSizeY < boardSizeY {
+		boardSizeY = termSizeY
+	}
+	if termSizeX < boardSizeX {
+		boardSizeX = termSizeX
+	}
+	board := make([][]Cell, boardSizeY)
 	for y := range board {
-		board[y] = make([]Cell, boardSize*2)
+		board[y] = make([]Cell, boardSizeX)
 		for x := range board[y] {
-			if x == 0 || y == 0 || x == (boardSize*2)-1 || y == boardSize-1 {
+			if x == 0 || y == 0 || x == (boardSizeX)-1 || y == boardSizeY-1 {
 				board[y][x] = Cell{x, y, false, ColorWall}
 			} else {
 				board[y][x] = Cell{x, y, true, ColorEmpty}
