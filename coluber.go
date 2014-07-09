@@ -57,27 +57,27 @@ func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
 				break
 			}
 			if i == 0 {
-				if !board[snake[i].Y][snake[i].X].Clear { //collision
-					switch snake[i].Dir { //undo move of head segment
+				if !board[snake[0].Y][snake[0].X].Clear { //collision
+					switch snake[0].Dir { //undo move of head segment
 					case 0:
-						snake[i].Y = snake[i].Y + 1
+						snake[0].Y = snake[0].Y + 1
 						break
 					case 1:
-						snake[i].X = snake[i].X - 1
+						snake[0].X = snake[0].X - 1
 						break
 					case 2:
-						snake[i].Y = snake[i].Y - 1
+						snake[0].Y = snake[0].Y - 1
 						break
 					case 3:
-						snake[i].X = snake[i].X + 1
+						snake[0].X = snake[0].X + 1
 						break
 					}
 					gameOver(snake, board)
 					return
 				}
-				board[snake[i].Y][snake[i].X].Color = ColorSnake
-				board[snake[i].Y][snake[i].X].Clear = false
-				termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
+				board[snake[0].Y][snake[0].X].Color = ColorSnake
+				board[snake[0].Y][snake[0].X].Clear = false
+				termbox.SetCell(snake[0].X, snake[0].Y, 0x0000, termbox.ColorBlack, ColorSnake)
 			}
 		}
 		for j := len(snake) - 1; j > 0; j-- {
