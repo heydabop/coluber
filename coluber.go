@@ -4,6 +4,7 @@ import (
 	"github.com/nsf/termbox-go"
 	"log"
 	"math/rand"
+	"strconv"
 	"time"
 )
 
@@ -35,7 +36,16 @@ func gameOver(snake []Segment, board [][]Cell) {
 	return
 }
 
+func renderScore(score uint64) {
+	scoreStr := strconv.FormatUint(score, 10)
+	for i := range scoreStr {
+		termbox.SetCell(i, 0, rune(scoreStr[i]), termbox.ColorBlack, ColorWall)
+	}
+}
+
 func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
+	score := uint64(0)
+	renderScore(score)
 	ticker := time.NewTicker(100 * time.Millisecond)
 	food := false
 	for {
@@ -94,6 +104,8 @@ func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
 						snake = append(snake, Segment{newX, newY, snake[len(snake)-1].Dir})
 						board[newY][newX].Color = ColorSnake
 						board[newY][newX].Clear = false
+						score++
+						renderScore(score)
 					} else { //with wall
 						switch snake[0].Dir { //undo move of head segment
 						case 0:
