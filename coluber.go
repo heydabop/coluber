@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/nsf/termbox-go"
 	"log"
+	"math/rand"
 	"time"
 )
 
@@ -35,8 +36,21 @@ func gameOver(snake []Segment, board [][]Cell) {
 }
 
 func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
+	food := false
 	for {
-		for i := range snake {
+		if !food {
+			randX := rand.Intn(len(board[0]))
+			randY := rand.Intn(len(board))
+			for !board[randY][randX].Clear {
+				randX = rand.Intn(len(board[0]))
+				randY = rand.Intn(len(board))
+			}
+			board[randY][randX].Clear = false
+			board[randY][randX].Color = ColorFood
+			termbox.SetCell(randX, randY, 0x0000, termbox.ColorBlack, ColorFood)
+			food = true
+		}
+		for i := 0; i < len(snake); i++ {
 			if i == len(snake)-1 {
 				board[snake[i].Y][snake[i].X].Color = ColorEmpty
 				board[snake[i].Y][snake[i].X].Clear = true
@@ -58,22 +72,45 @@ func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
 			}
 			if i == 0 {
 				if !board[snake[0].Y][snake[0].X].Clear { //collision
-					switch snake[0].Dir { //undo move of head segment
-					case 0:
-						snake[0].Y = snake[0].Y + 1
-						break
-					case 1:
-						snake[0].X = snake[0].X - 1
-						break
-					case 2:
-						snake[0].Y = snake[0].Y - 1
-						break
-					case 3:
-						snake[0].X = snake[0].X + 1
-						break
+					if board[snake[0].Y][snake[0].X].Color == ColorFood { //with food
+						food = false
+						newX := snake[len(snake)-1].X
+						newY := snake[len(snake)-1].Y
+						switch snake[len(snake)-1].Dir {
+						case 0:
+							newY = newY + 1
+							break
+						case 1:
+							newX = newX - 1
+							break
+						case 2:
+							newY = newY - 1
+							break
+						case 3:
+							newX = newX + 1
+							break
+						}
+						snake = append(snake, Segment{newX, newY, snake[len(snake)-1].Dir})
+						board[newY][newX].Color = ColorSnake
+						board[newY][newX].Clear = false
+					} else { //with wall
+						switch snake[0].Dir { //undo move of head segment
+						case 0:
+							snake[0].Y = snake[0].Y + 1
+							break
+						case 1:
+							snake[0].X = snake[0].X - 1
+							break
+						case 2:
+							snake[0].Y = snake[0].Y - 1
+							break
+						case 3:
+							snake[0].X = snake[0].X + 1
+							break
+						}
+						gameOver(snake, board)
+						return
 					}
-					gameOver(snake, board)
-					return
 				}
 				board[snake[0].Y][snake[0].X].Color = ColorSnake
 				board[snake[0].Y][snake[0].X].Clear = false
@@ -85,11 +122,12 @@ func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
 		}
 		*lastDir = snake[0].Dir
 		termbox.Flush()
-		time.Sleep(200 * time.Millisecond)
+		time.Sleep(100 * time.Millisecond)
 	}
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	err := termbox.Init()
 	if err != nil {
 		log.Panicln(err)
