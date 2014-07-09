@@ -30,7 +30,7 @@ type Segment struct {
 
 func gameOver(snake []Segment, board [][]Cell) {
 	for i := range snake {
-		termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, termbox.ColorRed)
+		termbox.SetCell(snake[i].X, snake[i].Y, 0x0020, termbox.ColorBlack, termbox.ColorRed)
 	}
 	termbox.Flush()
 	return
@@ -58,14 +58,14 @@ func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
 			}
 			board[randY][randX].Clear = false
 			board[randY][randX].Color = ColorFood
-			termbox.SetCell(randX, randY, 0x0000, termbox.ColorBlack, ColorFood)
+			termbox.SetCell(randX, randY, 0x0020, termbox.ColorBlack, ColorFood)
 			food = true
 		}
 		for i := 0; i < len(snake); i++ {
 			if i == len(snake)-1 {
 				board[snake[i].Y][snake[i].X].Color = ColorEmpty
 				board[snake[i].Y][snake[i].X].Clear = true
-				termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
+				termbox.SetCell(snake[i].X, snake[i].Y, 0x0020, termbox.ColorBlack, ColorEmpty)
 			}
 			switch snake[i].Dir {
 			case 0:
@@ -127,7 +127,7 @@ func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
 				}
 				board[snake[0].Y][snake[0].X].Color = ColorSnake
 				board[snake[0].Y][snake[0].X].Clear = false
-				termbox.SetCell(snake[0].X, snake[0].Y, 0x0000, termbox.ColorBlack, ColorSnake)
+				termbox.SetCell(snake[0].X, snake[0].Y, 0x0020, termbox.ColorBlack, ColorSnake)
 			}
 		}
 		for j := len(snake) - 1; j > 0; j-- {
@@ -176,7 +176,7 @@ func main() {
 	}
 	for _, row := range board {
 		for _, cell := range row {
-			termbox.SetCell(cell.X, cell.Y, 0x0000, termbox.ColorBlack, cell.Color)
+			termbox.SetCell(cell.X, cell.Y, 0x0020, termbox.ColorBlack, cell.Color)
 		}
 	}
 	termbox.Flush()
