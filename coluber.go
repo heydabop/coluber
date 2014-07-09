@@ -185,30 +185,56 @@ func main() {
 	for {
 		switch ev := termbox.PollEvent(); ev.Type {
 		case termbox.EventKey:
-			switch ev.Key {
-			case termbox.KeyArrowUp:
-				if lastDir != 2 {
-					snake[0].Dir = 0
+			if ev.Ch == 0 { //not letter key
+				switch ev.Key {
+				case termbox.KeyArrowUp:
+					if lastDir != 2 {
+						snake[0].Dir = 0
+					}
+					break
+				case termbox.KeyArrowRight:
+					if lastDir != 3 {
+						snake[0].Dir = 1
+					}
+					break
+				case termbox.KeyArrowDown:
+					if lastDir != 0 {
+						snake[0].Dir = 2
+					}
+					break
+				case termbox.KeyArrowLeft:
+					if lastDir != 1 {
+						snake[0].Dir = 3
+					}
+					break
+				case termbox.KeyCtrlC:
+					return
 				}
-				break
-			case termbox.KeyArrowRight:
-				if lastDir != 3 {
-					snake[0].Dir = 1
+			} else {
+				switch ev.Ch {
+				case 'w':
+					if lastDir != 2 {
+						snake[0].Dir = 0
+					}
+					break
+				case 'd':
+					if lastDir != 3 {
+						snake[0].Dir = 1
+					}
+					break
+				case 's':
+					if lastDir != 0 {
+						snake[0].Dir = 2
+					}
+					break
+				case 'a':
+					if lastDir != 1 {
+						snake[0].Dir = 3
+					}
+					break
 				}
-				break
-			case termbox.KeyArrowDown:
-				if lastDir != 0 {
-					snake[0].Dir = 2
-				}
-				break
-			case termbox.KeyArrowLeft:
-				if lastDir != 1 {
-					snake[0].Dir = 3
-				}
-				break
-			case termbox.KeyCtrlC:
-				return
 			}
+			break
 		case termbox.EventError:
 			log.Panic(ev.Err)
 			break
