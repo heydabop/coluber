@@ -36,6 +36,7 @@ func gameOver(snake []Segment, board [][]Cell) {
 }
 
 func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
+	ticker := time.NewTicker(100 * time.Millisecond)
 	food := false
 	for {
 		if !food {
@@ -122,7 +123,7 @@ func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
 		}
 		*lastDir = snake[0].Dir
 		termbox.Flush()
-		time.Sleep(100 * time.Millisecond)
+		<-ticker.C
 	}
 }
 
