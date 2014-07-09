@@ -148,7 +148,7 @@ func main() {
 			}
 		}
 	}
-	snake := make([]Segment, 7, 16)
+	snake := make([]Segment, 7, 1024)
 	for i := range snake {
 		snake[i] = Segment{40 - i, 20, 1}
 		board[20][40-i].Color = ColorSnake
