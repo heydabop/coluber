@@ -29,59 +29,29 @@ type Segment struct {
 func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
 	for {
 		for i := range snake {
+			if i == len(snake)-1 {
+				board[snake[i].Y][snake[i].X].Color = ColorEmpty
+				board[snake[i].Y][snake[i].X].Clear = true
+				termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
+			}
 			switch snake[i].Dir {
 			case 0:
-				if i == len(snake)-1 {
-					board[snake[i].Y][snake[i].X].Color = ColorEmpty
-					board[snake[i].Y][snake[i].X].Clear = true
-					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
-				}
 				snake[i].Y = snake[i].Y - 1
-				if i == 0 {
-					board[snake[i].Y][snake[i].X].Color = ColorSnake
-					board[snake[i].Y][snake[i].X].Clear = false
-					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
-				}
 				break
 			case 1:
-				if i == len(snake)-1 {
-					board[snake[i].Y][snake[i].X].Color = ColorEmpty
-					board[snake[i].Y][snake[i].X].Clear = true
-					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
-				}
 				snake[i].X = snake[i].X + 1
-				if i == 0 {
-					board[snake[i].Y][snake[i].X].Color = ColorSnake
-					board[snake[i].Y][snake[i].X].Clear = false
-					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
-				}
 				break
 			case 2:
-				if i == len(snake)-1 {
-					board[snake[i].Y][snake[i].X].Color = ColorEmpty
-					board[snake[i].Y][snake[i].X].Clear = true
-					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
-				}
 				snake[i].Y = snake[i].Y + 1
-				if i == 0 {
-					board[snake[i].Y][snake[i].X].Color = ColorSnake
-					board[snake[i].Y][snake[i].X].Clear = false
-					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
-				}
 				break
 			case 3:
-				if i == len(snake)-1 {
-					board[snake[i].Y][snake[i].X].Color = ColorEmpty
-					board[snake[i].Y][snake[i].X].Clear = true
-					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorEmpty)
-				}
 				snake[i].X = snake[i].X - 1
-				if i == 0 {
-					board[snake[i].Y][snake[i].X].Color = ColorSnake
-					board[snake[i].Y][snake[i].X].Clear = false
-					termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
-				}
 				break
+			}
+			if i == 0 {
+				board[snake[i].Y][snake[i].X].Color = ColorSnake
+				board[snake[i].Y][snake[i].X].Clear = false
+				termbox.SetCell(snake[i].X, snake[i].Y, 0x0000, termbox.ColorBlack, ColorSnake)
 			}
 		}
 		for j := len(snake) - 1; j > 0; j-- {
