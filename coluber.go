@@ -79,7 +79,7 @@ func initGame() ([]Segment, [][]Cell) {
 	return snake, board
 }
 
-func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
+func moveSnake(snake []Segment, board [][]Cell, lastDir *int, gameOverC chan bool) {
 	score := uint64(0)
 	renderScore(score)
 	ticker := time.NewTicker(100 * time.Millisecond)
@@ -158,6 +158,7 @@ func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
 							break
 						}
 						gameOver(snake, board)
+						gameOverC <- true
 						return
 					}
 				}
@@ -184,65 +185,96 @@ func main() {
 	defer termbox.Close()
 	termbox.SetInputMode(termbox.InputEsc)
 
-	snake, board := initGame()
-	lastDir := snake[0].Dir
-	go moveSnake(snake, board, &lastDir)
-	for {
+	OutsideGameLoop: for {
+		gameLoop()
 		switch ev := termbox.PollEvent(); ev.Type {
 		case termbox.EventKey:
-			if ev.Ch == 0 { //not letter key
+			if ev.Ch != 0 { //letter key
+				switch ev.Ch {
+				case 'q':
+					return
+				case 'n':
+					continue OutsideGameLoop
+				}
+			} else {
 				switch ev.Key {
-				case termbox.KeyArrowUp:
-					if lastDir != 2 {
-						snake[0].Dir = 0
-					}
-					break
-				case termbox.KeyArrowRight:
-					if lastDir != 3 {
-						snake[0].Dir = 1
-					}
-					break
-				case termbox.KeyArrowDown:
-					if lastDir != 0 {
-						snake[0].Dir = 2
-					}
-					break
-				case termbox.KeyArrowLeft:
-					if lastDir != 1 {
-						snake[0].Dir = 3
-					}
-					break
 				case termbox.KeyCtrlC:
 					return
 				}
-			} else {
-				switch ev.Ch {
-				case 'w':
-					if lastDir != 2 {
-						snake[0].Dir = 0
-					}
-					break
-				case 'd':
-					if lastDir != 3 {
-						snake[0].Dir = 1
-					}
-					break
-				case 's':
-					if lastDir != 0 {
-						snake[0].Dir = 2
-					}
-					break
-				case 'a':
-					if lastDir != 1 {
-						snake[0].Dir = 3
-					}
-					break
-				}
 			}
-			break
 		case termbox.EventError:
 			log.Panic(ev.Err)
 			break
+		}
+	}
+}
+
+func gameLoop() {
+	snake, board := initGame()
+	lastDir := snake[0].Dir
+	gameOverC := make(chan bool, 1)
+	go moveSnake(snake, board, &lastDir, gameOverC)
+	for {
+		select {
+		case <-gameOverC:
+			return
+		default:
+			switch ev := termbox.PollEvent(); ev.Type {
+			case termbox.EventKey:
+				if ev.Ch == 0 { //not letter key
+					switch ev.Key {
+					case termbox.KeyArrowUp:
+						if lastDir != 2 {
+							snake[0].Dir = 0
+						}
+						break
+					case termbox.KeyArrowRight:
+						if lastDir != 3 {
+							snake[0].Dir = 1
+						}
+						break
+					case termbox.KeyArrowDown:
+						if lastDir != 0 {
+							snake[0].Dir = 2
+						}
+						break
+					case termbox.KeyArrowLeft:
+						if lastDir != 1 {
+							snake[0].Dir = 3
+						}
+						break
+					case termbox.KeyCtrlC:
+						return
+					}
+				} else {
+					switch ev.Ch {
+					case 'w':
+						if lastDir != 2 {
+							snake[0].Dir = 0
+						}
+						break
+					case 'd':
+						if lastDir != 3 {
+							snake[0].Dir = 1
+						}
+						break
+					case 's':
+						if lastDir != 0 {
+							snake[0].Dir = 2
+						}
+						break
+					case 'a':
+						if lastDir != 1 {
+							snake[0].Dir = 3
+						}
+						break
+					}
+				}
+				break
+			case termbox.EventError:
+				log.Panic(ev.Err)
+				break
+			}
 		}
 	}
 }
