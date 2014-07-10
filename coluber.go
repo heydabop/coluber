@@ -108,7 +108,8 @@ func makeWalls(board [][]Cell) {
 			case 1:
 				x += 1
 				break
-			case 2: y += 1
+			case 2:
+				y += 1
 				break
 			case 3:
 				x -= 1
@@ -224,7 +225,8 @@ func main() {
 	defer termbox.Close()
 	termbox.SetInputMode(termbox.InputEsc)
 
-	OutsideGameLoop: for {
+OutsideGameLoop:
+	for {
 		gameLoop()
 		switch ev := termbox.PollEvent(); ev.Type {
 		case termbox.EventKey:
