@@ -43,6 +43,42 @@ func renderScore(score uint64) {
 	}
 }
 
+func initGame() ([]Segment, [][]Cell) {
+	boardSizeY := 40
+	boardSizeX := boardSizeY * 2
+	termSizeX, termSizeY := termbox.Size()
+	if termSizeY < boardSizeY {
+		boardSizeY = termSizeY
+	}
+	if termSizeX < boardSizeX {
+		boardSizeX = termSizeX
+	}
+	board := make([][]Cell, boardSizeY)
+	for y := range board {
+		board[y] = make([]Cell, boardSizeX)
+		for x := range board[y] {
+			if x == 0 || y == 0 || x == (boardSizeX)-1 || y == boardSizeY-1 {
+				board[y][x] = Cell{x, y, false, ColorWall}
+			} else {
+				board[y][x] = Cell{x, y, true, ColorEmpty}
+			}
+		}
+	}
+	snake := make([]Segment, 7, 1024)
+	for i := range snake {
+		snake[i] = Segment{40 - i, 20, 1}
+		board[20][40-i].Color = ColorSnake
+		board[20][40-i].Clear = false
+	}
+	for _, row := range board {
+		for _, cell := range row {
+			termbox.SetCell(cell.X, cell.Y, 0x0020, termbox.ColorBlack, cell.Color)
+		}
+	}
+	termbox.Flush()
+	return snake, board
+}
+
 func moveSnake(snake []Segment, board [][]Cell, lastDir *int) {
 	score := uint64(0)
 	renderScore(score)
@@ -148,38 +184,7 @@ func main() {
 	defer termbox.Close()
 	termbox.SetInputMode(termbox.InputEsc)
 
-	boardSizeY := 40
-	boardSizeX := boardSizeY * 2
-	termSizeX, termSizeY := termbox.Size()
-	if termSizeY < boardSizeY {
-		boardSizeY = termSizeY
-	}
-	if termSizeX < boardSizeX {
-		boardSizeX = termSizeX
-	}
-	board := make([][]Cell, boardSizeY)
-	for y := range board {
-		board[y] = make([]Cell, boardSizeX)
-		for x := range board[y] {
-			if x == 0 || y == 0 || x == (boardSizeX)-1 || y == boardSizeY-1 {
-				board[y][x] = Cell{x, y, false, ColorWall}
-			} else {
-				board[y][x] = Cell{x, y, true, ColorEmpty}
-			}
-		}
-	}
-	snake := make([]Segment, 7, 1024)
-	for i := range snake {
-		snake[i] = Segment{40 - i, 20, 1}
-		board[20][40-i].Color = ColorSnake
-		board[20][40-i].Clear = false
-	}
-	for _, row := range board {
-		for _, cell := range row {
-			termbox.SetCell(cell.X, cell.Y, 0x0020, termbox.ColorBlack, cell.Color)
-		}
-	}
-	termbox.Flush()
+	snake, board := initGame()
 	lastDir := snake[0].Dir
 	go moveSnake(snake, board, &lastDir)
 	for {
