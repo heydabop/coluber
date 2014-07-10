@@ -70,6 +70,7 @@ func initGame() ([]Segment, [][]Cell) {
 		board[20][40-i].Color = ColorSnake
 		board[20][40-i].Clear = false
 	}
+	makeWalls(board)
 	for _, row := range board {
 		for _, cell := range row {
 			termbox.SetCell(cell.X, cell.Y, 0x0020, termbox.ColorBlack, cell.Color)
@@ -77,6 +78,44 @@ func initGame() ([]Segment, [][]Cell) {
 	}
 	termbox.Flush()
 	return snake, board
+}
+
+func makeWalls(board [][]Cell) {
+	for i := 0; i < 6; i++ {
+		length := rand.Intn(25) + 7
+		y := rand.Intn(len(board))
+		x := rand.Intn(len(board[0]))
+		dir := rand.Intn(4)
+		for j := 0; j < length; j++ {
+			if !(y >= 0 && y < len(board) && x >= 0 && x < len(board[0])) ||
+				!board[y][x].Clear {
+				break
+			}
+			board[y][x].Clear = false
+			board[y][x].Color = ColorWall
+			change := rand.Intn(10)
+			if change >= 8 {
+				if change == 9 {
+					dir = (dir + 1) % 4
+				} else {
+					dir = (dir - 1) % 4
+				}
+			}
+			switch dir {
+			case 0:
+				y -= 1
+				break
+			case 1:
+				x += 1
+				break
+			case 2: y += 1
+				break
+			case 3:
+				x -= 1
+				break
+			}
+		}
+	}
 }
 
 func moveSnake(snake []Segment, board [][]Cell, lastDir *int, gameOverC chan bool) {
