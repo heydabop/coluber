@@ -145,16 +145,16 @@ func moveSnake(snake []Segment, board [][]Cell, lastDir *int, gameOverC chan boo
 			}
 			switch snake[i].Dir {
 			case 0:
-				snake[i].Y = snake[i].Y - 1
+				snake[i].Y -= 1
 				break
 			case 1:
-				snake[i].X = snake[i].X + 1
+				snake[i].X += 1
 				break
 			case 2:
-				snake[i].Y = snake[i].Y + 1
+				snake[i].Y += 1
 				break
 			case 3:
-				snake[i].X = snake[i].X - 1
+				snake[i].X -= 1
 				break
 			}
 			if i == 0 {
@@ -165,16 +165,16 @@ func moveSnake(snake []Segment, board [][]Cell, lastDir *int, gameOverC chan boo
 						newY := snake[len(snake)-1].Y
 						switch snake[len(snake)-1].Dir {
 						case 0:
-							newY = newY + 1
+							newY += 1
 							break
 						case 1:
-							newX = newX - 1
+							newX -= 1
 							break
 						case 2:
-							newY = newY - 1
+							newY -= 1
 							break
 						case 3:
-							newX = newX + 1
+							newX += 1
 							break
 						}
 						snake = append(snake, Segment{newX, newY, snake[len(snake)-1].Dir})
@@ -185,16 +185,16 @@ func moveSnake(snake []Segment, board [][]Cell, lastDir *int, gameOverC chan boo
 					} else { //with wall
 						switch snake[0].Dir { //undo move of head segment
 						case 0:
-							snake[0].Y = snake[0].Y + 1
+							snake[0].Y += 1
 							break
 						case 1:
-							snake[0].X = snake[0].X - 1
+							snake[0].X -= 1
 							break
 						case 2:
-							snake[0].Y = snake[0].Y - 1
+							snake[0].Y -= 1
 							break
 						case 3:
-							snake[0].X = snake[0].X + 1
+							snake[0].X += 1
 							break
 						}
 						gameOver(snake, board)
