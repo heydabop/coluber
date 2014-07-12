@@ -20,6 +20,7 @@ type Cell struct {
 	Y     int
 	Clear bool
 	Color termbox.Attribute
+	Reachable bool
 }
 
 type Segment struct {
@@ -58,15 +59,15 @@ func initGame() ([]Segment, [][]Cell) {
 		board[y] = make([]Cell, boardSizeX)
 		for x := range board[y] {
 			if x == 0 || y == 0 || x == (boardSizeX)-1 || y == boardSizeY-1 {
-				board[y][x] = Cell{x, y, false, ColorWall}
+				board[y][x] = Cell{x, y, false, ColorWall, false}
 			} else {
-				board[y][x] = Cell{x, y, true, ColorEmpty}
+				board[y][x] = Cell{x, y, true, ColorEmpty, false}
 			}
 		}
 	}
 	snake := make([]Segment, 7, 1024)
 	for i := range snake {
-		snake[i] = Segment{40 - i, 20, 1}
+		snake[i] = Segment{boardSizeX/2 - i, boardSizeY/2, 1}
 		board[20][40-i].Color = ColorSnake
 		board[20][40-i].Clear = false
 	}
@@ -117,6 +118,7 @@ func makeWalls(board [][]Cell) {
 			}
 		}
 	}
+	
 }
 
 func moveSnake(snake []Segment, board [][]Cell, lastDir *int, gameOverC chan bool) {
