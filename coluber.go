@@ -84,43 +84,96 @@ func initGame() ([]Segment, [][]Cell) {
 }
 
 func makeWalls(board [][]Cell) {
-	for i := 0; i < 6; i++ {
-		length := rand.Intn(25) + 7
-		y := rand.Intn(len(board))
-		x := rand.Intn(len(board[0]))
-		dir := rand.Intn(4)
-		for j := 0; j < length; j++ {
-			if !(y >= 0 && y < len(board) && x >= 0 && x < len(board[0])) ||
-				!board[y][x].Clear {
-				break
-			}
-			board[y][x].Clear = false
-			board[y][x].Color = ColorWall
-			change := rand.Intn(10)
-			if change >= 8 {
-				if change == 9 {
-					dir = (dir + 1) % 4
-				} else {
-					dir = (dir - 1) % 4
+	boardValid := false //set to false if sections of board get walled off
+	oldBoard := make([][]Cell, len(board))
+	copy(oldBoard, board)
+	for !boardValid {
+		for i := 0; i < 6; i++ {
+			length := rand.Intn(25) + 7
+			y := rand.Intn(len(board))
+			x := rand.Intn(len(board[0]))
+			dir := rand.Intn(4)
+			for j := 0; j < length; j++ {
+				if !(y >= 0 && y < len(board) && x >= 0 && x < len(board[0])) ||
+					!board[y][x].Clear {
+					break
+				}
+				board[y][x].Clear = false
+				board[y][x].Color = ColorWall
+				change := rand.Intn(10)
+				if change >= 8 {
+					if change == 9 {
+						dir = (dir + 1) % 4
+					} else {
+						dir = (dir - 1) % 4
+					}
+				}
+				switch dir {
+				case 0:
+					y -= 1
+					break
+				case 1:
+					x += 1
+					break
+				case 2:
+					y += 1
+					break
+				case 3:
+					x -= 1
+					break
 				}
 			}
-			switch dir {
-			case 0:
-				y -= 1
-				break
-			case 1:
-				x += 1
-				break
-			case 2:
-				y += 1
-				break
-			case 3:
-				x -= 1
-				break
+		}
+		if(!floodFill(board)) { //board has sections unreachable from start
+			boardValid = false
+			copy(board, oldBoard) //reset board
+		} else {
+			boardValid = true
+		}
+	}
+}
+
+func floodFill(board [][]Cell) bool {
+	log.Println("floodFill")
+	floodGrid := make([][]bool, len(board))
+	for i := range floodGrid {
+		floodGrid[i] = make([]bool, len(board[i]))
+		for j := range floodGrid[i] {
+			floodGrid[i][j] = false
+		}
+	}
+	fill(len(board[0])/2 + 1, len(board)/2, board, floodGrid)
+	for y := range board {
+		for x := range board[y] {
+			if board[y][x].Clear && !floodGrid[y][x] { //board space is clear but unaccesible from start
+				log.Printf("ERROR AT %d, %d\n", x, y)
+				return false
 			}
 		}
 	}
-	
+	return true
+}
+
+func fill(x, y int, board [][]Cell, floodGrid [][]bool) {
+	log.Printf("Checking %d, %d", x, y)
+	if floodGrid[y][x] == true || !board[y][x].Clear {
+		log.Println("Not true.\n")
+		return
+	}
+	log.Println("True.\n")
+	floodGrid[y][x] = true
+	if y - 1 >= 0 {
+		fill(x, y-1, board, floodGrid)
+	}
+	if y + 1 < len(board) {
+		fill(x, y+1, board, floodGrid)
+	}
+	if x - 1 >= 0 {
+		fill(x-1, y, board, floodGrid)
+	}
+	if x + 1 < len(board[y]) {
+		fill(x+1, y, board, floodGrid)
+	}
 }
 
 func moveSnake(snake []Segment, board [][]Cell, lastDir *int, gameOverC chan bool) {
