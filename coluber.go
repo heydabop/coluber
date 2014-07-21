@@ -66,10 +66,12 @@ func initGame() ([]Segment, [][]Cell) {
 		}
 	}
 	snake := make([]Segment, 7, 1024)
+	midX := boardSizeX/2
+	midY := boardSizeY/2
 	for i := range snake {
-		snake[i] = Segment{boardSizeX/2 - i, boardSizeY/2, 1}
-		board[20][40-i].Color = ColorSnake
-		board[20][40-i].Clear = false
+		snake[i] = Segment{midX - i, midY, 1}
+		board[midY][midX-i].Color = ColorSnake
+		board[midY][midX-i].Clear = false
 	}
 	makeWalls(board)
 	for _, row := range board {
